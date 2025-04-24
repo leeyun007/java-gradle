@@ -53,7 +53,8 @@ jobs:
 
       - name: Run container & Smoke-test
         run: |
-          docker run -d --rm -p 8080:8080 --name sb-test java-gradle:${{ github.sha }}
+          docker run -d -p 8080:8080 --name sb-test java-gradle:${{ github.sha }}
+          echo "Container ID: $CID"
 
           echo "Waiting for application to start…"
           for i in {1..40}; do             
@@ -66,4 +67,6 @@ jobs:
 
           echo "Service did not start in time. Container log:"
           docker logs sb-test || true
+          docker logs $CID || true
+          docker rm -f $CID || true
           exit 1
