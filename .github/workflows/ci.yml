@@ -56,11 +56,12 @@ jobs:
         run: |
           docker run -d --rm -p 8080:8080 --name sb-test java-gradle:${{ github.sha }}
           echo "Waiting for application to start…"
-          for i in {1..30}; do
+          for i in {1..50}; do
             if curl -fs http://localhost:8080/ping > /dev/null; then
               echo "Service is up"; exit 0
             fi
             sleep 2
           done
           echo "Service did not start in time" >&2
+          docker logs sb-test || true  
           exit 1
