@@ -20,7 +20,7 @@ dependencies {
 }
 
 springBoot {
-    mainClassName = 'com.sample.SampleApplication.java'
+    mainClassName = 'com.sample.SampleApplication'
 }
 test {
 	useJUnitPlatform()
