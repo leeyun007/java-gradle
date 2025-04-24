@@ -54,7 +54,7 @@ jobs:
 
       - name: Run JAR & Smoke-test
         run: |
-          java -jar build/libs/app-*.jar &
+          java -jar build/libs/app.jar &
           echo "Waiting for app to start…"
           sleep 5
           curl -f http://localhost:8080/ping
