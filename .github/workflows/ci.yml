@@ -1,0 +1,65 @@
+name: CI
+
+on:
+   push:
+    branches: [ master ]
+   pull_request:
+    branches: [ master ]
+
+jobs:
+  build-and-test:
+    name: Build, Test & Reports
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 11
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*','**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build & run tests
+        run: ./gradlew clean build jacocoTestReport
+
+      - name: Upload JUnit Test Reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-reports
+          path: build/reports/tests/**
+
+      - name: Upload Code Coverage Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: build/reports/jacoco/test/html/**
+
+  docker-deploy:
+    name: Docker Build & JAR Deploy
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build Docker image
+        run: docker build --file Dockerfile --tag java-gradle:${{ github.sha }} .
+
+      - name: Run JAR (simulate deployment)
+        run: |
+          java -jar build/libs/app-*.jar &
+          sleep 5
+          curl -f http://localhost:8080/ping
