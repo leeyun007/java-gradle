@@ -36,13 +36,13 @@ jobs:
         run: ./gradlew clean build jacocoTestReport
 
       - name: Upload JUnit Test Reports
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-reports
           path: build/reports/tests/**
 
       - name: Upload Code Coverage Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: build/reports/jacoco/test/html/**
