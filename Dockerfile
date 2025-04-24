@@ -5,7 +5,7 @@ ADD ./ /opt/build
 WORKDIR /opt/build
 
 RUN ./gradlew bootJar --no-daemon \
-    && cp ./build/libs/app.jar app.jar
+    && cp build/libs/*jar app.jar
 
 VOLUME /tmp
 EXPOSE 8080
