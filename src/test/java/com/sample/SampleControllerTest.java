@@ -20,7 +20,7 @@ public class SampleControllerTest {
     public void testHome() {
         ResponseEntity<String> response = restTemplate.getForEntity("/", String.class);
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
-        Assertions.assertEquals("OK", response.getBody());
+        Assertions.assertEquals("Fine", response.getBody());
     }
 
     @Test
