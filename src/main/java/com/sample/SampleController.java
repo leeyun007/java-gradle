@@ -9,7 +9,7 @@ public class SampleController {
 
     @RequestMapping(value="/", method=RequestMethod.GET)
     public String home() {
-        return new String("OK");
+        return new String("Fine");
     }
 
     @RequestMapping(value="/{seviceid}", method=RequestMethod.GET)
