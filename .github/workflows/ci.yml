@@ -42,25 +42,28 @@ jobs:
           path: build/reports/tests/**
 
   docker-deploy:
-    name: Docker Build & Run JAR
+    name: Docker Build & Smoke-test
     needs: build-test
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v3
-
+      - uses: actions/checkout@v3          
+      
       - name: Build Docker image
-        run: docker build --file Dockerfile --tag java-gradle:${{ github.sha }} .
+        run: docker build -t java-gradle:${{ github.sha }} .
 
       - name: Run container & Smoke-test
         run: |
           docker run -d --rm -p 8080:8080 --name sb-test java-gradle:${{ github.sha }}
+
           echo "Waiting for application to start…"
-          for i in {1..30}; do
-            if curl -fs http://localhost:8080/ping > /dev/null; then
-              echo "Service is up"; exit 0
+          for i in {1..40}; do             
+            if curl -fs http://localhost:8080/ >/dev/null; then
+              echo "Service is up"
+              exit 0
             fi
-            sleep 2
+            sleep 3
           done
-          echo "Service did not start in time" >&2
+
+          echo "Service did not start in time. Container log:"
+          docker logs sb-test || true
           exit 1

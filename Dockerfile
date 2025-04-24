@@ -4,7 +4,7 @@ RUN mkdir -p /opt/build
 ADD ./ /opt/build
 WORKDIR /opt/build
 
-RUN ./gradlew build --no-daemon \
+RUN ./gradlew bootJar --no-daemon \
     && cp ./build/libs/app.jar app.jar
 
 VOLUME /tmp
