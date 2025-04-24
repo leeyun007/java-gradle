@@ -49,12 +49,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Build JAR
+        run: ./gradlew clean bootJar   
+
       - name: Build Docker image
         run: docker build --file Dockerfile --tag java-gradle:${{ github.sha }} .
 
       - name: Run JAR & Smoke-test
         run: |
-          java -jar build/libs/app.jar &
+          java -jar build/libs/*.jar &
           echo "Waiting for app to start…"
           sleep 5
           curl -f http://localhost:8080/ping
